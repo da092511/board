@@ -18,6 +18,10 @@ public class Board {
 		return this.title;
 	}
 	
+	public String getDate() {
+		return this.date;
+	}
+	
 	
 	@Override
 	public String toString() {
