@@ -11,10 +11,15 @@ public class Cbs {
 	private Random random = new Random();
 
 	private final int JOIN = 1;
-	private final int LOGIN = 2;
+	private final int MARK_LOG = 2;
+	private final int ALL_CONTENT = 3;
+	private final int MY_PAGE = 4;
 	
 	private ArrayList<User> users;
 	private Map <User, ArrayList<Board>> boards;
+	
+	
+	private int log = -1;
 	
 	private Cbs() {
 		users = new ArrayList<>();
@@ -29,11 +34,14 @@ public class Cbs {
 	
 	private void showMenu() {
 		System.out.println("1) 회원가입");
-		System.out.println("2) 로그인");
+		System.out.println(String.format("2)%s", log == -1 ? "로그인" : "로그아웃"));
+		System.out.println("3)전체 게시물");
+		System.out.println("4)마이페이지");
 	}
 	
 	private int checkUserByCode(int code) {
 		int index =-1;
+		
 		for(int i=0;i<users.size();i++) {
 			User user = users.get(i);
 			if(user.getCode() == code)
@@ -55,18 +63,50 @@ public class Cbs {
 		return code;
 	}
 	
+	private int findUserById(String id) {
+		int index =-1;
+		
+		for(int i=0;i<users.size();i++) {
+			User user = users.get(i);
+			if(user.getId().equals(id))
+				index=i;
+		}
+		
+		return index;
+	}
+	
+	private String inputId() {
+		String id = "";
+		
+		while(true) {
+			id = inputString("id");
+			
+			if(findUserById(id) == -1)
+				break;
+			
+			System.err.println("중복된 아이디입니다.");
+		}
+		
+		return id;
+	}
+	
 	
 	private void join() {
 		int code = createCode();
+		String name = inputString("name");
+		String id = inputId();
 	}
 	
 	private void runMenu(int option) {
 		switch (option) {
-		case (JOIN):
+		case JOIN:
 			join();
 			break;
-
-		case (LOGIN):
+		case MARK_LOG:
+			break;
+		case ALL_CONTENT:
+			break;
+		case MY_PAGE:
 			break;
 		}
 	}
