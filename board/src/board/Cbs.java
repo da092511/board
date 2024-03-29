@@ -1,5 +1,6 @@
 package board;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,8 @@ import java.util.Scanner;
 public class Cbs {
 	private Scanner scanner = new Scanner(System.in);
 	private Random random = new Random();
-
+	private SimpleDateFormat sdf = new SimpleDateFormat("MM/DD hh:mm");
+	
 	private final int PAGE = 5;
 	
 	private final int JOIN = 1;
@@ -17,11 +19,16 @@ public class Cbs {
 	private final int ALL_CONTENT = 3;
 	private final int WRITE_CONTENT = 4;
 	private final int MY_PAGE = 5;
-	
+
+	private final int BEFORE = 1;
+	private final int NEXT = 2;
+	private final int SELECT = 3;
+	private final int BACK = 4;
+ 	
 	private ArrayList<User> users;
 	private ArrayList<Board> boards;
 	
-	private Map <User, ArrayList<Board>> owners;
+	private Map <ArrayList<Board>, User> owners;
 	
 	
 	private int log = -1;
@@ -29,7 +36,7 @@ public class Cbs {
 	private Cbs() {
 		users = new ArrayList<>();
 		boards = new ArrayList<>();
-		owners = new HashMap<User, ArrayList<Board>>();
+		owners = new HashMap<ArrayList<Board>, User>();
 	}
 	
 	private static Cbs instance = new Cbs();
@@ -163,19 +170,57 @@ public class Cbs {
 		System.out.println("0)뒤로가기");
 	}
 	
-	private void runContentMenu(int option) {
+	private int setPageBefore(int firstIndex) {
+		firstIndex -= PAGE; 
 		
+		if(firstIndex < 0) {
+			System.err.println("처음 페이지입니다.");
+			firstIndex = 0;
+		}
+		
+		return firstIndex;
 	}
 	
-	private void openContent() {
-		User user = users.get(log);
+	private int setPageNext(int firstIndex) {
+		firstIndex += PAGE; 
 		
+		if(firstIndex >= boards.size()) {
+			System.err.println("마지막 페이지입니다.");
+			firstIndex -= PAGE;
+		}
 		
+		return firstIndex;
+	}
+	
+	private void openContent(int select, int firstIndex) {
+		int index = firstIndex + select - 1;
+		Board board = boards.get(index);
+		
+		System.out.println(board);
+	}
+	
+	private int runContentMenu(int option, int firstIndex) {
+		switch (option) {
+		case BEFORE:
+			firstIndex = setPageBefore(firstIndex);
+			break;
+		case NEXT:
+			firstIndex = setPageNext(firstIndex);
+			break;
+		case SELECT:
+			int select = inputNumber("열람할 게시물 번호");
+			openContent(select, firstIndex);
+			break;
+		case BACK :
+			firstIndex = -1;
+			break;
+		}
+		
+		return firstIndex;
 	}
 	
 	private void content() {
 		int firstIndex = 0;
-		
 		
 		while(true) {
 			showContent(firstIndex);
@@ -185,8 +230,10 @@ public class Cbs {
 			if(option == 0)
 				break;
 			
-		//	runContentMenu(option);
+			firstIndex = runContentMenu(option, firstIndex);
 			
+			if(firstIndex == -1)
+				break;
 		}
 	}
 	
@@ -224,6 +271,14 @@ public class Cbs {
 		String id = user.getId();
 		String title = inputString("게시글 제목");
 		String content = writeContent();
+		String date = String.format(sdf.format(System.currentTimeMillis()));
+		
+		Board board = new Board(title, date, id, content);
+		//user.record(board);
+		boards.add(board);
+		
+		//유저 보드 목록 수정하기
+		
 	}
 	
 	private void runMenu(int option) {
