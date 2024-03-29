@@ -24,6 +24,11 @@ public class Cbs {
 		return instance;
 	}
 	
+	private void showMenu() {
+		System.out.println("1) 회원가입");
+		System.out.println("2) 로그인");
+	}
+	
 	public void run() {
 		// 콘솔 게시판
 			//user 만 사용 가능
@@ -32,7 +37,7 @@ public class Cbs {
 			// ㄴ Board CRUD				
 			//		ㄴ 글 작성자만 권한 있습니다.
 		while(true) {
-			
+			showMenu();
 			int option = inputNumber("메뉴");
 		}
 	}
