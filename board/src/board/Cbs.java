@@ -95,6 +95,12 @@ public class Cbs {
 		int code = createCode();
 		String name = inputString("name");
 		String id = inputId();
+		String pw = inputString("pw");
+		
+		User user = new User (code, name, id, pw);
+		users.add(user);
+		
+		System.out.println("회원가입 성공");
 	}
 	
 	private void runMenu(int option) {
