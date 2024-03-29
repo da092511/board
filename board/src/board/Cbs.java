@@ -112,7 +112,24 @@ public class Cbs {
 		}
 		
 		//로그인
-//		login();
+		login();
+	}
+	
+	private void login() {
+		String id = inputString("id");
+		String pw = inputString("pw");
+		
+		int index = findUserById(id);
+		if(index == -1) {
+			System.err.println("해당 아이디는 존재하지 않습니다.");	
+			return;
+		}else if(!users.get(index).getPw().equals(pw)) {
+			System.err.println("비밀번호가 틀립니다.");	
+			return;
+		}
+		
+		log = index;
+		System.out.println("로그인 성공");
 	}
 	
 	private void runMenu(int option) {
