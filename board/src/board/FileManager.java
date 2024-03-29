@@ -14,8 +14,16 @@ public class FileManager {
 	private FileReader fr ;
 	private BufferedReader br;
 	
-	public void saveFile(String data) {
-		
+	public void saveData(String data) {
+		try {
+			fw = new FileWriter(file);
+			fw.write(data);
+			
+			fw.close();
+			System.out.println("save Complete");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String loadFile() {
