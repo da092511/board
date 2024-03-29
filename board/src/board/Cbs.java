@@ -9,6 +9,9 @@ import java.util.Scanner;
 public class Cbs {
 	private Scanner scanner = new Scanner(System.in);
 	private Random random = new Random();
+
+	private final int JOIN = 1;
+	private final int LOGIN = 2;
 	
 	private ArrayList<User> users;
 	private Map <User, ArrayList<Board>> boards;
@@ -29,6 +32,45 @@ public class Cbs {
 		System.out.println("2) 로그인");
 	}
 	
+	private int checkUserByCode(int code) {
+		int index =-1;
+		for(int i=0;i<users.size();i++) {
+			User user = users.get(i);
+			if(user.getCode() == code)
+				index=i;
+		}
+		
+		return index;
+	}
+	
+	private int createCode() {
+		int code = 0;
+		while(true) {
+			code = random.nextInt(9000)+1000;
+			
+			if(checkUserByCode(code) != -1)
+				break;
+		}
+		
+		return code;
+	}
+	
+	
+	private void join() {
+		int code = createCode();
+	}
+	
+	private void runMenu(int option) {
+		switch (option) {
+		case (JOIN):
+			join();
+			break;
+
+		case (LOGIN):
+			break;
+		}
+	}
+	
 	public void run() {
 		// 콘솔 게시판
 			//user 만 사용 가능
@@ -39,6 +81,7 @@ public class Cbs {
 		while(true) {
 			showMenu();
 			int option = inputNumber("메뉴");
+			runMenu(option);
 		}
 	}
 	
