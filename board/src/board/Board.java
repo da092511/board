@@ -22,7 +22,6 @@ public class Board {
 		return this.date;
 	}
 	
-	
 	@Override
 	public String toString() {
 		String info = title;
