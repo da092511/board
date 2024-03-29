@@ -145,11 +145,13 @@ public class Cbs {
 		if(lastIndex >= boards.size())
 			lastIndex = boards.size();
 		
+		int n = 1;
 		for(int i= firstIndex;i<=lastIndex;i++) {
 			Board board = boards.get(i);
 			String title = board.getTitle();
 			
-			System.out.println(title);
+			System.out.println(n + title);
+			n++;
 		}
 		
 	}
