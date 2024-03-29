@@ -11,7 +11,7 @@ public class Cbs {
 	private Random random = new Random();
 
 	private final int JOIN = 1;
-	private final int MARK_LOG = 2;
+	private final int SET_LOG = 2;
 	private final int ALL_CONTENT = 3;
 	private final int MY_PAGE = 4;
 	
@@ -103,12 +103,25 @@ public class Cbs {
 		System.out.println("회원가입 성공");
 	}
 	
+	private void setLog() {
+		//로그아웃
+		if(log != -1) {
+			this.log = -1;
+			System.out.println("로그아웃 완료");
+			return;
+		}
+		
+		//로그인
+//		login();
+	}
+	
 	private void runMenu(int option) {
 		switch (option) {
 		case JOIN:
 			join();
 			break;
-		case MARK_LOG:
+		case SET_LOG:
+			setLog();
 			break;
 		case ALL_CONTENT:
 			break;
