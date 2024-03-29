@@ -1,13 +1,13 @@
 package board;
 
 public class Board {
-	private int id;
+	private String id;
 	
 	private String title;
 	private String date;
 	private String contents;
 	
-	public Board(String title, String date, String contents) {
+	public Board(String title, String id, String date, String contents) {
 		this.contents = contents;
 		this.title = title;
 		this.date = date;
