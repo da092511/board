@@ -1,11 +1,13 @@
 package board;
 
-public class User {
+public class User implements Accessible{
 	private int code;
 	
 	private String name ;
 	private String id;
 	private String pw;
+	
+	private int openContent;
 	
 	public User(int code, String name, String id, String pw) {
 		this.code =code;
@@ -28,5 +30,23 @@ public class User {
 	
 	public int getCode() {
 		return this.code;
+	}
+	
+	public void openContent() {
+		this.openContent ++;
+	}
+	
+	@Override
+	public boolean accessible() {
+		if(this.openContent >= 3)
+			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		String info = this.name + "[" + this.id + "/" + this.pw + "]";
+		return info;
 	}
 }
