@@ -36,12 +36,6 @@ public class Cbs {
 			int option = inputNumber("메뉴");
 		}
 	}
-	private String inputString (String message) {
-		message = String.format("%s : ", message);
-		System.out.println(message);
-		
-		return scanner.next();
-	}
 	
 	private int inputNumber(String message) {
 		int number = -1;
