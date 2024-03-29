@@ -18,4 +18,7 @@ public class User {
 		return this.id;
 	}
 
+	public String getPw() {
+		return this.pw;
+	}
 }
