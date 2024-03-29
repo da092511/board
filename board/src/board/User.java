@@ -21,4 +21,12 @@ public class User {
 	public String getPw() {
 		return this.pw;
 	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public int getCode() {
+		return this.code;
+	}
 }
