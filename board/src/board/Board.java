@@ -22,6 +22,10 @@ public class Board {
 		return this.date;
 	}
 	
+	public String getUserId() {
+		return this.id;
+	}
+	
 	@Override
 	public String toString() {
 		String info = title;
