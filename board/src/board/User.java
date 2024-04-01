@@ -16,6 +16,15 @@ public class User implements Accessible{
 		this.id = id;
 		this.pw = pw;
 	}
+	public User(int code, String name, String id, String pw, int openCount, int writeContentCount) {
+		this.code = code;
+		this.name = name;
+		this.id = id;
+		this.pw = pw;
+		
+		this.openCount = openCount;
+		this.writeContentCount = writeContentCount;
+	}
 	
 	public String getId() {
 		return this.id;
@@ -43,6 +52,9 @@ public class User implements Accessible{
 	
 	public void writeContent() {
 		this.writeContentCount++;
+	}
+	public void setWriteContent(int count) {
+		this.writeContentCount = count;
 	}
 	
 	public int getWriteContentCount() {
