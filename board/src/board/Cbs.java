@@ -311,7 +311,6 @@ public class Cbs {
 			isCheck = true;
 		}
 		
-		System.out.println(user.accessible());
 		if(isCheck && !user.accessible()) {
 			System.err.println("아직 접근이 불가능합니다.");
 			return;
@@ -395,14 +394,17 @@ public class Cbs {
 		runMyContentsMenu(option , index);
 	}
 	
-	private String updateData(String data) {
-		String line = inputStringLine("제목 수정할 부분 (없을 시 enter)");
+	private String updateData(String data, String name) {
+		String line = inputStringLine(String.format("%s 수정할 부분 (없을 시 enter)", name));
 		
 		String updateInfo = inputStringLine("수정할 내용");
 		
 		String newTitle = "";
 		
-		for(int i=0;i<data.length()-line.length()+1;i++) {
+		if(line.equals(""))
+			return newTitle;
+			
+		for(int i=0;i<data.length()-line.length();i++) {
 			boolean isCheck = true;
 			
 			for(int j=0;j<line.length();j++) 
@@ -413,11 +415,15 @@ public class Cbs {
 			
 			if(isCheck) {
 				newTitle += updateInfo;
-				i += updateInfo.length();
+				i += line.length()-1;
+				if(i > data.length()-line.length())
+					newTitle += data.substring(i+1);
 				continue;
 			}
 				
 			newTitle += data.substring(i,i+1);
+			if(i == data.length()-line.length()-1)
+				newTitle += data.substring(i+1);
 		}
 		
 		return newTitle;
@@ -434,10 +440,12 @@ public class Cbs {
 		Board board = myBoard.get(index);
 		System.out.println(board);
 		
-		String title = updateData(board.getTitle());
-		board.setTitle(title);
-		String contents = updateData(board.getContents());
-		board.setContents(contents);
+		String title = updateData(board.getTitle(),"제목");
+		if(!title.equals(""))
+			board.setTitle(title);
+		String contents = updateData(board.getContents(), "내용");
+		if(!contents.equals(""))
+			board.setContents(contents);
 	}
 	
 	private void delectContent(int index) {
