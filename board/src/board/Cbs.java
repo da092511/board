@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class Cbs {
 	private Scanner scanner = new Scanner(System.in);
 	private Random random = new Random();
-	private SimpleDateFormat sdf = new SimpleDateFormat("MM/DD hh:mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("MM.DD. hh:mm");
 	
 	private final int PAGE = 5;
 	
@@ -371,7 +371,13 @@ public class Cbs {
 	private String inputBoardData() {
 		String data = "";
 		
-		
+		for(Board board : boards) {
+			String title = board.getTitle();
+			String id = board.getUserId();
+			String boardDate = board.getDate();
+			String contents = board.getContents();
+			data += "\n" + title + "/" + id + "/" + boardDate + "/" + contents; 
+		}
 		
 		return data ;
 	}
@@ -380,7 +386,7 @@ public class Cbs {
 		/*  userSize
 		 *  usercode/username/userId/userPw/
 		 *  user2Code/...
-		 *  board1
+		 *  title/id/date/contents
 		 *  board2
 		 */
 		
@@ -388,6 +394,10 @@ public class Cbs {
 		
 		data += inputUserData();
 		data += inputBoardData();
+		
+		fm.saveData(data);
+		System.out.println("저장완료");
+		
 	}
 	
 	public void run() {
