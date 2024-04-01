@@ -26,6 +26,10 @@ public class Board {
 		return this.id;
 	}
 	
+	public String getContents() {
+		return this.contents;
+	}
+	
 	@Override
 	public String toString() {
 		String info = title;
