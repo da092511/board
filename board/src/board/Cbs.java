@@ -35,6 +35,10 @@ public class Cbs {
 	private int log = -1;
 	
 	private Cbs() {
+		setSystem();
+	}
+	
+	private void setSystem() {
 		users = new ArrayList<>();
 		boards = new ArrayList<>();
 		owners = new HashMap<User, ArrayList<Board>>();
@@ -341,13 +345,41 @@ public class Cbs {
 		}
 	}
 	
+	private void loadUserData(int userSize , String[] data) {
+		for(int i=1;i<=userSize;i++) {
+			String[] info = data[i].split("/");
+			int code = Integer.parseInt(info[0]);
+			String name = info[1];
+			String id = info[2];
+			String pw = info[3];
+			
+			User user = new User(code,name,id,pw);
+			
+			users.add(user);
+		}
+	}
+	
 	private void loadData() {
-		String data = fm.loadData();
+		/*  userSize
+		 *  usercode/username/userId/userPw/
+		 *  user2Code/...
+		 *  title/id/date/contents
+		 */
 		
-		if(data.equals(null) || data.equals(""))
+		setSystem();
+		
+		String info = fm.loadData();
+		
+		if(info.equals(null) || info.equals(""))
 			return;
 		
+		String[] data = info.split("\n");
 		
+		int userSize = Integer.parseInt(data[0]);
+		if(userSize == 0)
+			return;
+		
+		loadUserData(userSize, data);
 		
 	}
 	
@@ -387,7 +419,6 @@ public class Cbs {
 		 *  usercode/username/userId/userPw/
 		 *  user2Code/...
 		 *  title/id/date/contents
-		 *  board2
 		 */
 		
 		String data = "";
