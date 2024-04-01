@@ -47,4 +47,4 @@
 ---
 
 ## Class digram(UML)
-<imag src = "image/board.jpg" width ="300" height = "250"/>
+![board.jpeg](image/board1.jpg)
