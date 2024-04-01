@@ -19,6 +19,7 @@ public class Cbs {
 	private final int ALL_CONTENT = 3;
 	private final int WRITE_CONTENT = 4;
 	private final int MY_PAGE = 5;
+	private final int QUIT = 0;
 
 	private final int BEFORE = 1;
 	private final int NEXT = 2;
@@ -34,8 +35,12 @@ public class Cbs {
 	
 	private int log = -1;
 	
+	private boolean isRun;
+	
 	private Cbs() {
 		setSystem();
+		
+		this.isRun = true;
 	}
 	
 	private void setSystem() {
@@ -56,6 +61,7 @@ public class Cbs {
 		System.out.println("3)전체 게시물");
 		System.out.println("4)게시물 작성");
 		System.out.println("5)마이페이지");
+		System.out.println("0)종료");
 	}
 	
 	private int checkUserByCode(int code) {
@@ -202,6 +208,7 @@ public class Cbs {
 		Board board = boards.get(index);
 		
 		System.out.println(board);
+		System.out.println();
 	}
 	
 	private int runContentMenu(int option, int firstIndex) {
@@ -342,6 +349,8 @@ public class Cbs {
 			int select = inputNumber("");
 			runMyPageMenu(select);
 			break;
+		case QUIT : 
+			this.isRun = false;
 		}
 	}
 	
@@ -359,6 +368,31 @@ public class Cbs {
 		}
 	}
 	
+	private void loadBoardData(String[] boardData) {
+		String title = boardData[0];
+		String id = boardData[1];
+		String date = boardData[2];
+		String contents = boardData[3];
+		
+		Board board = new Board(title,id,date,contents);
+		boards.add(board);
+	}
+	
+	private void loadOwner() {
+		for(User user : users) {
+			String userId = user.getId();
+			
+			ArrayList<Board> own = new ArrayList<>();
+			for(Board board : boards) {
+				if(board.getUserId().equals(userId))
+					own.add(board);
+			}
+			
+			if(own.size() > 0)
+				owners.put(user, own);
+		}
+	}
+	
 	private void loadData() {
 		/*  userSize
 		 *  usercode/username/userId/userPw/
@@ -370,16 +404,25 @@ public class Cbs {
 		
 		String info = fm.loadData();
 		
-		if(info.equals(null) || info.equals(""))
+		if(info == null || info.equals(""))
 			return;
 		
 		String[] data = info.split("\n");
-		
+		System.out.println(data[0]);
 		int userSize = Integer.parseInt(data[0]);
 		if(userSize == 0)
 			return;
 		
 		loadUserData(userSize, data);
+		
+		if(data.length > userSize +1) {
+			for(int i = userSize+1;i<data.length;i++) {
+				String[] boardData = data[i].split("/");
+				loadBoardData(boardData);
+			}	
+		}
+		
+		loadOwner();
 		
 	}
 	
@@ -438,11 +481,12 @@ public class Cbs {
 			// ㄴ User CRUD
 			// ㄴ Board CRUD				
 			//		ㄴ 글 작성자만 권한 있습니다.
-		while(true) {
+		while(isRun) {
 			loadData();
 			showMenu();
 			int option = inputNumber("메뉴");
 			runMenu(option);
+			
 			saveData();
 		}
 	}
