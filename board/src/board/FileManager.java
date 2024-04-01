@@ -34,6 +34,9 @@ public class FileManager {
 				fr = new FileReader(file);
 				br = new BufferedReader(fr);
 				
+				while(br.ready()) {
+					info += br.readLine() +"\n";
+				}
 				
 				fr.close();
 				br.close();
