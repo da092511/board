@@ -46,7 +46,7 @@ public class User implements Accessible{
 	
 	@Override
 	public String toString() {
-		String info = this.name + "[" + this.id + "/" + this.pw + "]";
+		String info = this.name + "[" + this.id + "/" + this.pw + "]" + this.code;
 		return info;
 	}
 }

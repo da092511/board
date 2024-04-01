@@ -28,7 +28,7 @@ public class Cbs {
 	private ArrayList<User> users;
 	private ArrayList<Board> boards;
 	
-	private Map <ArrayList<Board>, User> owners;
+	private Map <User, ArrayList<Board>> owners;
 	
 	
 	private int log = -1;
@@ -36,7 +36,7 @@ public class Cbs {
 	private Cbs() {
 		users = new ArrayList<>();
 		boards = new ArrayList<>();
-		owners = new HashMap<ArrayList<Board>, User>();
+		owners = new HashMap<User, ArrayList<Board>>();
 	}
 	
 	private static Cbs instance = new Cbs();
@@ -46,7 +46,7 @@ public class Cbs {
 	}
 	
 	private void showMenu() {
-		System.out.println("1) 회원가입");
+		System.out.println("1)회원가입");
 		System.out.println(String.format("2)%s", log == -1 ? "로그인" : "로그아웃"));
 		System.out.println("3)전체 게시물");
 		System.out.println("4)게시물 작성");
@@ -70,7 +70,7 @@ public class Cbs {
 		while(true) {
 			code = random.nextInt(9000)+1000;
 			
-			if(checkUserByCode(code) != -1)
+			if(checkUserByCode(code) == -1)
 				break;
 		}
 		
@@ -147,17 +147,17 @@ public class Cbs {
 	}
 	
 	private void showContent(int firstIndex) {
-		int lastIndex = firstIndex + PAGE;
+		int pageSize = firstIndex + PAGE;
 		
-		if(lastIndex >= boards.size())
-			lastIndex = boards.size();
+		if(pageSize >= boards.size())
+			pageSize = boards.size();
 		
 		int n = 1;
-		for(int i= firstIndex;i<=lastIndex;i++) {
+		for(int i=firstIndex;i<pageSize;i++) {
 			Board board = boards.get(i);
 			String title = board.getTitle();
 			
-			System.out.println(n + title);
+			System.out.println(n +". "+ title);
 			n++;
 		}
 		
@@ -242,11 +242,9 @@ public class Cbs {
 		String info = "";
 		
 		while(true) {
-			String line = inputString("줄바꿈[;] 글쓰기 완료[1] 뒤로가기[0]");
+			String line = inputString("줄바꿈[;] 글쓰기 완료[0]]");
 			
 			if(line.equals("0")) 
-				break;
-			else if (line.equals("1"))
 				break;
 			
 			info += line;
@@ -257,6 +255,7 @@ public class Cbs {
 	
 	private void write() {
 		User user = users.get(log);
+		int userCode = user.getCode();
 		
 		boolean isCheck = false;
 		if(boards.size() > 3) {
@@ -278,6 +277,28 @@ public class Cbs {
 		boards.add(board);
 		
 		//유저 보드 목록 수정하기
+		if(owners.get(user) == null) {
+			ArrayList<Board> myBoard = new ArrayList<Board>();
+			myBoard.add(board);
+			
+			owners.put(user, myBoard);
+			boards.add(board);
+			return;
+		}
+		
+		ArrayList<Board> myBoard= owners.get(user);
+		myBoard.add(board);
+		
+		owners.replace(user,myBoard);
+		boards.add(board);
+	}
+	
+	private void showMyPageMenu() {
+		System.out.println("1)내 정보");
+		System.out.println("2)내 게시물");
+	}
+	
+	private void runMyPageMenu(int select) {
 		
 	}
 	
@@ -296,8 +317,19 @@ public class Cbs {
 			write();
 			break;
 		case MY_PAGE:
+			showMyPageMenu();
+			int select = inputNumber("");
+			runMyPageMenu(select);
 			break;
 		}
+	}
+	
+	private void loadData() {
+		//
+	}
+	
+	private void saveData() {
+		
 	}
 	
 	public void run() {
@@ -308,23 +340,32 @@ public class Cbs {
 			// ㄴ Board CRUD				
 			//		ㄴ 글 작성자만 권한 있습니다.
 		while(true) {
+			loadData();
 			showMenu();
 			int option = inputNumber("메뉴");
 			runMenu(option);
+			saveData();
 		}
+	}
+	
+	private String inputStringLine(String message) {
+		message = String.format("%s : ", message);
+		System.out.print(message);
+		String input = scanner.nextLine();
+		return input;
 	}
 	
 	private String inputString(String message) {
 		message = String.format("%s : ", message);
-		System.out.println(message);
+		System.out.print(message);
 		
-		return scanner.nextLine();
+		return scanner.next();
 	}
 	
 	private int inputNumber(String message) {
 		int number = -1;
 		message = String.format("%s : ", message);
-		System.out.println(message);
+		System.out.print(message);
 		try {
 			String input = scanner.next();
 			number = Integer.parseInt(input);

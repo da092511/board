@@ -26,7 +26,7 @@ public class FileManager {
 		}
 	}
 	
-	public String loadFile() {
+	public String loadData() {
 		String info = "";
 		if(file.exists()) {
 			
