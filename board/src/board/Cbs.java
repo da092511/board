@@ -514,8 +514,10 @@ public class Cbs {
 			String name = info[1];
 			String id = info[2];
 			String pw = info[3];
+			int openCnt = Integer.parseInt(info[4]);
+			int writeCnt = Integer.parseInt(info[5]);
 			
-			User user = new User(code,name,id,pw);
+			User user = new User(code,name,id,pw, openCnt, writeCnt);
 			
 			users.add(user);
 		}
@@ -588,8 +590,11 @@ public class Cbs {
 			String userName = user.getName();
 			String userId = user.getId();
 			String userPw = user.getPw();
+			int userOpenCnt = user.getOpenCount();
+			int userWriteCnt = user.getWriteContentCount();
 			
 			data += "\n" + userCode + "/" + userName +"/" + userId +"/" +userPw;
+			data += "/" + userOpenCnt +"/" + userWriteCnt;
 		}
 		
 		return data;
