@@ -351,8 +351,43 @@ public class Cbs {
 		
 	}
 	
-	private void saveData() {
+	private String inputUserData() {
+		String data = "";
 		
+		data += users.size();
+		
+		for(User user : users) {
+			int userCode = user.getCode();
+			String userName = user.getName();
+			String userId = user.getId();
+			String userPw = user.getPw();
+			
+			data += "\n" + userCode + "/" + userName +"/" + userId +"/" +userPw;
+		}
+		
+		return data;
+	}
+	
+	private String inputBoardData() {
+		String data = "";
+		
+		
+		
+		return data ;
+	}
+	
+	private void saveData() {
+		/*  userSize
+		 *  usercode/username/userId/userPw/
+		 *  user2Code/...
+		 *  board1
+		 *  board2
+		 */
+		
+		String data = "";
+		
+		data += inputUserData();
+		data += inputBoardData();
 	}
 	
 	public void run() {
