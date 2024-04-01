@@ -242,18 +242,34 @@ public class Cbs {
 		String info = "";
 		
 		while(true) {
-			String line = inputString("줄바꿈[;] 글쓰기 완료[0]]");
+			String line = inputStringLine("줄바꿈[enter] 글쓰기 완료[0]]");
 			
-			if(line.equals("0")) 
+			String data = "";
+			String last = "";
+			
+			if(!line.equals("")) {
+				data = line.substring(0, line.length()-1);
+				last = line.substring(line.length()-1, line.length());
+			}
+			else 
+				continue;
+			
+			info += data;
+			
+			if(last.equals("0")) {
 				break;
+			}
 			
-			info += line;
+			info += last + "<br>";
 		}
 		
 		return info;
 	}
 	
 	private void write() {
+		if(log == -1)
+			return ;
+		
 		User user = users.get(log);
 		int userCode = user.getCode();
 		
@@ -268,7 +284,8 @@ public class Cbs {
 		}
 		
 		String id = user.getId();
-		String title = inputString("게시글 제목");
+		String line = inputStringLine("게시글 제목");
+		String title = line;
 		String content = writeContent();
 		String date = String.format(sdf.format(System.currentTimeMillis()));
 		
@@ -282,7 +299,7 @@ public class Cbs {
 			myBoard.add(board);
 			
 			owners.put(user, myBoard);
-			boards.add(board);
+			
 			return;
 		}
 		
@@ -290,7 +307,6 @@ public class Cbs {
 		myBoard.add(board);
 		
 		owners.replace(user,myBoard);
-		boards.add(board);
 	}
 	
 	private void showMyPageMenu() {
@@ -325,11 +341,15 @@ public class Cbs {
 	}
 	
 	private void loadData() {
-		//
+		
 	}
 	
 	private void saveData() {
 		
+	}
+	private void printStatus() {
+		System.out.println(boards);
+		System.out.println(owners);
 	}
 	
 	public void run() {
@@ -340,6 +360,7 @@ public class Cbs {
 			// ㄴ Board CRUD				
 			//		ㄴ 글 작성자만 권한 있습니다.
 		while(true) {
+			printStatus();
 			loadData();
 			showMenu();
 			int option = inputNumber("메뉴");
@@ -349,10 +370,13 @@ public class Cbs {
 	}
 	
 	private String inputStringLine(String message) {
-		message = String.format("%s : ", message);
+		scanner.nextLine();
+		
+		message = String.format("%s :", message);
 		System.out.print(message);
 		String input = scanner.nextLine();
-		return input;
+		
+		return input.toString();
 	}
 	
 	private String inputString(String message) {

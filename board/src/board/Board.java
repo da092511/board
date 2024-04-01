@@ -25,10 +25,10 @@ public class Board {
 	@Override
 	public String toString() {
 		String info = title;
-		info += "\n----------------";
-		info += String.format("\n%s\t\t%s", this.date, this.id);
-		info += "\n----------------";
-		String[] content = contents.split(";");
+		info += "\n---------------------------";
+		info += String.format("\n%s\t%s", this.date, this.id);
+		info += "\n---------------------------";
+		String[] content = contents.split("<br>");
 		for(String line : content)
 			info += "\n" + line;
 
