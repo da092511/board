@@ -30,6 +30,7 @@ public class Cbs {
 	
 	private Map <User, ArrayList<Board>> owners;
 	
+	private FileManager fm = new FileManager();
 	
 	private int log = -1;
 	
@@ -341,15 +342,17 @@ public class Cbs {
 	}
 	
 	private void loadData() {
+		String data = fm.loadData();
+		
+		if(data.equals(null) || data.equals(""))
+			return;
+		
+		
 		
 	}
 	
 	private void saveData() {
 		
-	}
-	private void printStatus() {
-		System.out.println(boards);
-		System.out.println(owners);
 	}
 	
 	public void run() {
@@ -360,7 +363,6 @@ public class Cbs {
 			// ㄴ Board CRUD				
 			//		ㄴ 글 작성자만 권한 있습니다.
 		while(true) {
-			printStatus();
 			loadData();
 			showMenu();
 			int option = inputNumber("메뉴");
