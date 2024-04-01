@@ -121,6 +121,16 @@ public class Cbs {
 		return id;
 	}
 	
+	private void checkManager(String id) {
+		int index = findUserById(id);
+		
+		if(index == 0) {
+			User manager = users.get(index);
+			
+			for(int i=0;i<3;i++)
+				manager.openContent();
+		}
+	}
 	
 	private void join() {
 		int code = createCode();
@@ -130,6 +140,8 @@ public class Cbs {
 		
 		User user = new User (code, name, id, pw);
 		users.add(user);
+		
+		checkManager(id);	
 		
 		System.out.println("회원가입 성공");
 	}
@@ -408,7 +420,6 @@ public class Cbs {
 			newTitle += data.substring(i,i+1);
 		}
 		
-		System.out.println(newTitle);
 		return newTitle;
 	}
 	
@@ -526,7 +537,6 @@ public class Cbs {
 			
 			ArrayList<Board> own = new ArrayList<>();
 			for(Board board : boards) {
-				System.out.println(board.getUserId());
 				if(board.getUserId().equals(userId))
 					own.add(board);
 			}
