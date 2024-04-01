@@ -43,3 +43,8 @@
 
 ## DEMO
 <img src = "image/board.gif" width ="300" height = "250"/>
+
+---
+
+## Class digram(UML)
+<imag src = "image/board.jpg" width ="300" height = "250"/>
