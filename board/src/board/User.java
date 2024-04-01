@@ -7,11 +7,12 @@ public class User implements Accessible{
 	private String id;
 	private String pw;
 	
-	private int openContent;
+	private int openCount;
+	private int writeContentCount;
 	
 	public User(int code, String name, String id, String pw) {
-		this.code =code;
-		this.name =name;
+		this.code = code;
+		this.name = name;
 		this.id = id;
 		this.pw = pw;
 	}
@@ -32,13 +33,25 @@ public class User implements Accessible{
 		return this.code;
 	}
 	
+	public int getOpenCount() {
+		return this.openCount;
+	}
+	
 	public void openContent() {
-		this.openContent ++;
+		this.openCount ++;
+	}
+	
+	public void writeContent() {
+		this.writeContentCount++;
+	}
+	
+	public int getWriteContentCount() {
+		return this.writeContentCount;
 	}
 	
 	@Override
 	public boolean accessible() {
-		if(this.openContent >= 3)
+		if(this.openCount >= 3)
 			return true;
 		
 		return false;
@@ -46,7 +59,7 @@ public class User implements Accessible{
 	
 	@Override
 	public String toString() {
-		String info = this.name + "[" + this.id + "/" + this.pw + "]" + this.code;
+		String info = this.name + "[ID : " + this.id + "/PW : " + this.pw + "] code : " + this.code;
 		return info;
 	}
 }

@@ -17,6 +17,9 @@ public class Board {
 	public String getTitle() {
 		return this.title;
 	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	
 	public String getDate() {
 		return this.date;
@@ -28,6 +31,10 @@ public class Board {
 	
 	public String getContents() {
 		return this.contents;
+	}
+	
+	public void setContents(String contents) {
+		this.contents = contents;
 	}
 	
 	@Override

@@ -25,11 +25,17 @@ public class Cbs {
 	private final int NEXT = 2;
 	private final int SELECT = 3;
 	private final int BACK = 4;
- 	
+
+	private final int MY_INFO = 1;
+	private final int MY_CONTENTS =2;
+	
+	private final int UPDATE = 1;
+	private final int DELECT = 2;
+	
 	private ArrayList<User> users;
 	private ArrayList<Board> boards;
 	
-	private Map <User, ArrayList<Board>> owners;
+	private Map <String, ArrayList<Board>> owners;  // <id,ArrayList<Board>>
 	
 	private FileManager fm = new FileManager();
 	
@@ -46,7 +52,7 @@ public class Cbs {
 	private void setSystem() {
 		users = new ArrayList<>();
 		boards = new ArrayList<>();
-		owners = new HashMap<User, ArrayList<Board>>();
+		owners = new HashMap<String, ArrayList<Board>>();
 	}
 	
 	private static Cbs instance = new Cbs();
@@ -205,6 +211,9 @@ public class Cbs {
 	
 	private void openContent(int select, int firstIndex) {
 		int index = firstIndex + select - 1;
+		
+		users.get(log).openContent();
+		
 		Board board = boards.get(index);
 		
 		System.out.println(board);
@@ -286,10 +295,11 @@ public class Cbs {
 		int userCode = user.getCode();
 		
 		boolean isCheck = false;
-		if(boards.size() > 3) {
+		if(boards.size() >= 3) {
 			isCheck = true;
 		}
 		
+		System.out.println(user.accessible());
 		if(isCheck && !user.accessible()) {
 			System.err.println("아직 접근이 불가능합니다.");
 			return;
@@ -301,33 +311,163 @@ public class Cbs {
 		String content = writeContent();
 		String date = String.format(sdf.format(System.currentTimeMillis()));
 		
-		Board board = new Board(title, date, id, content);
+		Board board = new Board(title, id, date, content);
 		//user.record(board);
 		boards.add(board);
+		user.writeContent();
 		
 		//유저 보드 목록 수정하기
-		if(owners.get(user) == null) {
+		if(owners.get(id) == null) {
 			ArrayList<Board> myBoard = new ArrayList<Board>();
 			myBoard.add(board);
 			
-			owners.put(user, myBoard);
+			owners.put(id, myBoard);
 			
 			return;
 		}
 		
-		ArrayList<Board> myBoard= owners.get(user);
+		ArrayList<Board> myBoard= owners.get(id);
 		myBoard.add(board);
 		
-		owners.replace(user,myBoard);
+		owners.replace(id,myBoard);
 	}
 	
 	private void showMyPageMenu() {
 		System.out.println("1)내 정보");
 		System.out.println("2)내 게시물");
 	}
+
+	private void showMyInformation() {
+		User user = users.get(log);
+		int openCnt = user.getOpenCount();
+		
+		System.out.println(user);
+		System.out.println("작성한 게시물 : " + user.getWriteContentCount() + "개");
+		System.out.println("열람한 게시물 : " + openCnt + "개");
+		System.out.println(user.accessible() ? "게시물 작성 가능" : "게시물 작성 불가");
+	}
+	
+	private ArrayList<Board> getOwnBoard(){
+		User user = users.get(log);
+		String userId = user.getId();
+		
+		ArrayList<Board> myBoard = owners.get(userId);
+		
+		return myBoard;
+	}
+	
+	private void showMyContents() {
+		ArrayList<Board> myBoard = getOwnBoard();
+		
+		int n =1;
+		for(Board board : myBoard) {
+			String title = board.getTitle();
+			
+			System.out.println(n + ". " + title);
+			n++;
+		}
+	}
+	
+	private void showMyContentMenu() {
+		System.out.println("1) 수정");
+		System.out.println("2) 삭제");
+	}
+	
+	private void openContents(int index) {
+		ArrayList<Board> myBoard = getOwnBoard();
+		System.out.println(myBoard.get(index));
+		
+		showMyContentMenu();
+		
+		int option = inputNumber("");
+		runMyContentsMenu(option , index);
+	}
+	
+	private String updateData(String data) {
+		String line = inputStringLine("제목 수정할 부분 (없을 시 enter)");
+		
+		String updateInfo = inputStringLine("수정할 내용");
+		
+		String newTitle = "";
+		
+		for(int i=0;i<data.length()-line.length()+1;i++) {
+			boolean isCheck = true;
+			
+			for(int j=0;j<line.length();j++) 
+				if(!data.substring(i+j,i+j+1).equals(line.substring(j,j+1))) {
+					isCheck = false;
+					break;
+				}
+			
+			if(isCheck) {
+				newTitle += updateInfo;
+				i += updateInfo.length();
+				continue;
+			}
+				
+			newTitle += data.substring(i,i+1);
+		}
+		
+		System.out.println(newTitle);
+		return newTitle;
+	}
+	
+	private void updateContent(int index) {
+		String userId = users.get(log).getId();
+		
+		ArrayList<Board> myBoard = getOwnBoard();
+		
+		if(myBoard == null)
+			return;
+		
+		Board board = myBoard.get(index);
+		System.out.println(board);
+		
+		String title = updateData(board.getTitle());
+		board.setTitle(title);
+		String contents = updateData(board.getContents());
+		board.setContents(contents);
+	}
+	
+	private void delectContent(int index) {
+		String userId = users.get(log).getId();
+		
+		ArrayList<Board> myBoard = getOwnBoard();
+		myBoard.remove(index);
+		
+		owners.put(userId, myBoard);
+	}
+	
+	private void runMyContentsMenu(int option, int index) {
+		switch(option) {
+		case UPDATE : 
+			updateContent(index);
+			break;
+		case DELECT : 
+			delectContent(index);
+			break;
+		}
+	}
+	
 	
 	private void runMyPageMenu(int select) {
-		
+		switch(select) {
+		case MY_INFO : 
+			showMyInformation();
+			break;
+		case MY_CONTENTS : 
+			showMyContents();
+			int index = inputNumber("확인할 게시물 번호")-1;
+			
+			if(index == -1)
+				return;
+			
+			openContents(index);
+		}
+	}
+	
+	private boolean checkLog() {
+		return this.log == -1 ? false : true;
 	}
 	
 	private void runMenu(int option) {
@@ -345,6 +485,8 @@ public class Cbs {
 			write();
 			break;
 		case MY_PAGE:
+			if(!checkLog())
+				break;
 			showMyPageMenu();
 			int select = inputNumber("");
 			runMyPageMenu(select);
@@ -384,12 +526,13 @@ public class Cbs {
 			
 			ArrayList<Board> own = new ArrayList<>();
 			for(Board board : boards) {
+				System.out.println(board.getUserId());
 				if(board.getUserId().equals(userId))
 					own.add(board);
 			}
 			
 			if(own.size() > 0)
-				owners.put(user, own);
+				owners.put(userId, own);
 		}
 	}
 	
@@ -408,7 +551,6 @@ public class Cbs {
 			return;
 		
 		String[] data = info.split("\n");
-		System.out.println(data[0]);
 		int userSize = Integer.parseInt(data[0]);
 		if(userSize == 0)
 			return;
