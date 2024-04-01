@@ -306,12 +306,7 @@ public class Cbs {
 		User user = users.get(log);
 		int userCode = user.getCode();
 		
-		boolean isCheck = false;
-		if(boards.size() >= 3) {
-			isCheck = true;
-		}
-		
-		if(isCheck && !user.accessible()) {
+		if(!user.accessible()) {
 			System.err.println("아직 접근이 불가능합니다.");
 			return;
 		}
